@@ -247,6 +247,7 @@ export * from './server/util/RouterHandler';
 export * from './storage/accessors/DataAccessor';
 export * from './storage/accessors/FileDataAccessor';
 export * from './storage/accessors/InMemoryDataAccessor';
+export * from './storage/accessors/S3DataAccessor';
 export * from './storage/accessors/SparqlDataAccessor';
 
 // Storage/Conversion

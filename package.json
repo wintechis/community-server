@@ -75,6 +75,7 @@
     "templates"
   ],
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.41.0",
     "@comunica/actor-init-sparql": "^1.21.3",
     "@rdfjs/data-model": "^1.2.0",
     "@solid/access-token-verifier": "^1.0.1",
