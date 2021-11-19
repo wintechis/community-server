@@ -53,6 +53,7 @@
     "prepare": "npm run build",
     "start": "node ./bin/server.js",
     "start:file": "node ./bin/server.js -c config/file.json -f ./data",
+    "start:s3": "node ./bin/server.js -c config/s3.json",
     "test": "npm run test:ts && npm run jest",
     "test:deploy": "test/deploy/validate-package.sh",
     "test:ts": "tsc -p test --noEmit",
@@ -76,6 +77,7 @@
   ],
   "dependencies": {
     "@aws-sdk/client-s3": "^3.41.0",
+    "@aws-sdk/lib-storage": "^3.41.0",
     "@comunica/actor-init-sparql": "^1.21.3",
     "@rdfjs/data-model": "^1.2.0",
     "@solid/access-token-verifier": "^1.0.1",
