@@ -127,6 +127,10 @@ export class S3DataAccessor implements DataAccessor {
       if (resource.Key === objectId) {
         continue;
       }
+      // Skip meta objects
+      if (resource.Key?.endsWith('.meta')) {
+        continue;
+      }
       const metadata = new RepresentationMetadata({
         path: `${this.baseUrl}${resource.Key}`,
       });
@@ -291,7 +295,7 @@ export class S3DataAccessor implements DataAccessor {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             Key: metaId,
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            Body: serializedMetadata as Readable,
+            Body: Readable.from(serializedMetadata),
           },
         });
         await upload.done();
