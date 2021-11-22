@@ -1,5 +1,5 @@
-import type { Readable } from 'stream';
-import { DeleteObjectsCommand, NoSuchKey, ObjectIdentifier, _Object } from '@aws-sdk/client-s3';
+import { Readable } from 'stream';
+import type { NoSuchKey } from '@aws-sdk/client-s3';
 import { ListObjectsCommand, DeleteObjectCommand, GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import type { Quad } from 'rdf-js';
@@ -50,14 +50,14 @@ export class S3DataAccessor implements DataAccessor {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         Key: objectId,
       }));
-      this.logger.info(`Got Data: ${identifier.path}`);
+      this.logger.debug(`Got Data: ${identifier.path}`);
       return guardStream(object.Body as Readable);
     } catch (error: unknown) {
       if ((error as NoSuchKey).name === 'NoSuchKey') {
-        this.logger.info(`Got no data (not found): ${identifier.path}`);
+        this.logger.debug(`Got no data (not found): ${identifier.path}`);
         throw new NotFoundHttpError();
       }
-      this.logger.info(`Got no data (${error}): ${identifier.path}`);
+      this.logger.debug(`Got no data (${error}): ${identifier.path}`);
       throw error;
     }
   }
@@ -69,7 +69,7 @@ export class S3DataAccessor implements DataAccessor {
     const objectId = identifier.path.replace(this.baseUrl, '');
     // Root container
     if (objectId.length === 0) {
-      this.logger.info(`Got metadata: ${identifier.path}`);
+      this.logger.debug(`Got metadata: ${identifier.path}`);
       const metadata = new RepresentationMetadata(identifier).addQuads(await this.getRawMetadata(identifier));
       addResourceMetadata(metadata, true);
       return metadata;
@@ -77,13 +77,13 @@ export class S3DataAccessor implements DataAccessor {
 
     try {
       // Check if objects exists
-      await this.s3client.send(new GetObjectCommand({
+      const object = await this.s3client.send(new GetObjectCommand({
         // eslint-disable-next-line @typescript-eslint/naming-convention
         Bucket: this.bucketName,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         Key: objectId,
       }));
-      this.logger.info(`Got metadata: ${identifier.path}`);
+      this.logger.debug(`Got metadata: ${identifier.path}`);
       const metadata = new RepresentationMetadata(identifier).addQuads(await this.getRawMetadata(identifier));
       // Is container?
       if (objectId.endsWith('/')) {
@@ -91,9 +91,9 @@ export class S3DataAccessor implements DataAccessor {
         return metadata;
       }
       addResourceMetadata(metadata, false);
-      return metadata.set(CONTENT_TYPE, 'text/turtle');
+      return metadata.set(CONTENT_TYPE, object.ContentType);
     } catch (error: unknown) {
-      this.logger.info(`Got no metadata: ${identifier.path}`);
+      this.logger.debug(`Got no metadata: ${identifier.path}`);
       if ((error as NoSuchKey).name === 'NoSuchKey') {
         throw new NotFoundHttpError();
       } else {
@@ -103,7 +103,7 @@ export class S3DataAccessor implements DataAccessor {
   }
 
   public async* getChildren(identifier: ResourceIdentifier): AsyncIterableIterator<RepresentationMetadata> {
-    this.logger.info(`Get children: ${identifier.path}`);
+    this.logger.debug(`Get children: ${identifier.path}`);
     const objectId = identifier.path.replace(this.baseUrl, '');
     const listing = await this.s3client.send(new ListObjectsCommand({
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -145,7 +145,7 @@ export class S3DataAccessor implements DataAccessor {
    */
   public async writeDocument(identifier: ResourceIdentifier, data: Guarded<Readable>, metadata: RepresentationMetadata):
   Promise<void> {
-    this.logger.info(`Write Document: ${identifier.path}`);
+    this.logger.info(`Write Document: ${identifier.path} (${metadata.contentType})`);
     const objectId = identifier.path.replace(this.baseUrl, '');
     const metaId = `${objectId}.meta`;
     const wroteMetadata = await this.writeMetadata(metaId, metadata);
@@ -159,6 +159,8 @@ export class S3DataAccessor implements DataAccessor {
           Key: objectId,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           Body: data as Readable,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          ContentType: metadata.contentType,
         },
       });
       await upload.done();
@@ -181,7 +183,7 @@ export class S3DataAccessor implements DataAccessor {
    * Creates corresponding folder if necessary and writes metadata to metadata file if necessary.
    */
   public async writeContainer(identifier: ResourceIdentifier, metadata: RepresentationMetadata): Promise<void> {
-    this.logger.info(`Write container: ${identifier.path}`);
+    this.logger.debug(`Write container: ${identifier.path}`);
     const objectId = identifier.path.replace(this.baseUrl, '');
     const metaId = `${objectId}.meta`;
     if (objectId.length > 0) {
@@ -209,7 +211,7 @@ export class S3DataAccessor implements DataAccessor {
    * Removes the corresponding object, metadata object and all objects in this "folder".
    */
   public async deleteResource(identifier: ResourceIdentifier): Promise<void> {
-    this.logger.info(`Delete resource: ${identifier.path}`);
+    this.logger.debug(`Delete resource: ${identifier.path}`);
     const objectId = identifier.path.replace(this.baseUrl, '');
     const metaId = `${objectId}.meta`;
 
