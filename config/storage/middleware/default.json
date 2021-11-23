@@ -2,6 +2,7 @@
   "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^2.0.0/components/context.jsonld",
   "import": [
     "files-scs:config/storage/middleware/stores/converting.json",
+    "files-scs:config/storage/middleware/stores/direct-container.json",
     "files-scs:config/storage/middleware/stores/locking.json",
     "files-scs:config/storage/middleware/stores/patching.json"
   ],
@@ -28,7 +29,11 @@
     },
     {
       "@id": "urn:solid-server:default:ResourceStore_Converting",
-      "RepresentationConvertingStore:_source": { "@id": "urn:solid-server:default:ResourceStore_Backend" }
+      "RepresentationConvertingStore:_source": { "@id": "urn:solid-server:default:ResourceStore_DirectContainer" }
+    },
+    {
+      "@id": "urn:solid-server:default:ResourceStore_DirectContainer",
+      "DirectContainerStore:_source": { "@id": "urn:solid-server:default:ResourceStore_Backend" }
     }
   ]
 }

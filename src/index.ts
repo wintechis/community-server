@@ -304,6 +304,7 @@ export * from './storage/BaseResourceStore';
 export * from './storage/BasicConditions';
 export * from './storage/Conditions';
 export * from './storage/DataAccessorBasedStore';
+export * from './storage/DirectContainerStore';
 export * from './storage/IndexRepresentationStore';
 export * from './storage/LockingResourceStore';
 export * from './storage/MonitoringStore';
