@@ -145,7 +145,7 @@ export class S3DataAccessor implements DataAccessor {
    */
   public async writeDocument(identifier: ResourceIdentifier, data: Guarded<Readable>, metadata: RepresentationMetadata):
   Promise<void> {
-    this.logger.info(`Write Document: ${identifier.path} (${metadata.contentType})`);
+    this.logger.debug(`Write Document: ${identifier.path} (${metadata.contentType})`);
     const objectId = identifier.path.replace(this.baseUrl, '');
     const metaId = `${objectId}.meta`;
     const wroteMetadata = await this.writeMetadata(metaId, metadata);
