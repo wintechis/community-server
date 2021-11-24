@@ -92,6 +92,9 @@ export const HTTP = createUriAndTermNamespace('http://www.w3.org/2011/http#',
 
 export const LDP = createUriAndTermNamespace('http://www.w3.org/ns/ldp#',
   'contains',
+  'hasMemberRelation',
+  'isMemberOfRelation',
+  'membershipResource',
 
   'BasicContainer',
   'Container',

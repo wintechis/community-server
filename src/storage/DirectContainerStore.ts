@@ -1,5 +1,5 @@
 import { namedNode } from '@rdfjs/data-model';
-import type { Quad } from '@rdfjs/types';
+import type { Quad, NamedNode } from '@rdfjs/types';
 import { BasicRepresentation } from '../http/representation/BasicRepresentation';
 import type { Representation } from '../http/representation/Representation';
 import type { RepresentationMetadata } from '../http/representation/RepresentationMetadata';
@@ -18,10 +18,17 @@ export class DirectContainerStore<T extends ResourceStore = ResourceStore> exten
   public async getRepresentation(identifier: ResourceIdentifier, preferences: RepresentationPreferences,
     conditions?: Conditions): Promise<Representation> {
     const representation = await this.source.getRepresentation(identifier, preferences, conditions);
+    const direct = representation.metadata.quads(
+      representation.metadata.identifier,
+      RDF.type,
+      LDP.DirectContainer,
+    ).length > 0;
+
     if (representation.metadata.contentType === INTERNAL_QUADS) {
-      this.logger.info(`MetaQuads1: ${representation.metadata.quads().length}`);
-      this.removeBasicContainerInRepresentation(representation);
-      this.logger.info(`MetaQuads2: ${representation.metadata.quads().length}`);
+      if (direct) {
+        this.removeBasicContainerInRepresentation(representation);
+        this.addMembershipTriples(representation);
+      }
       await Promise.all(representation.metadata.quads(
         null,
         namedNode(RDF.type),
@@ -36,7 +43,6 @@ export class DirectContainerStore<T extends ResourceStore = ResourceStore> exten
           representation.metadata,
         ),
       ));
-      this.logger.info(`MetaQuads3: ${representation.metadata.quads().length}`);
 
       return new BasicRepresentation(
         representation.metadata.quads().filter((qu: Quad): boolean =>
@@ -49,15 +55,45 @@ export class DirectContainerStore<T extends ResourceStore = ResourceStore> exten
     return representation;
   }
 
-  private removeBasicContainerInRepresentation(representation: Representation): void {
-    const direct = representation.metadata.quads(
+  private addMembershipTriples(representation: Representation): void {
+    const memResource = representation.metadata.quads(
       representation.metadata.identifier,
-      RDF.type,
-      LDP.DirectContainer,
-    ).length > 0;
-    if (direct) {
-      representation.metadata.remove(namedNode(RDF.type), namedNode(LDP.BasicContainer));
+      LDP.membershipResource,
+      null,
+    )[0]?.object as NamedNode;
+    if (memResource === undefined) {
+      return;
     }
+    const hasMemRelation = representation.metadata.quads(
+      representation.metadata.identifier,
+      LDP.hasMemberRelation,
+      null,
+    )[0]?.object as NamedNode;
+    const isMemOfRelation = representation.metadata.quads(
+      representation.metadata.identifier,
+      LDP.isMemberOfRelation,
+      null,
+    )[0]?.object as NamedNode;
+    const children = representation.metadata.quads(
+      representation.metadata.identifier,
+      LDP.contains,
+      null,
+    ).map(
+      (qu: Quad): NamedNode => qu.object as NamedNode,
+    );
+    if (hasMemRelation !== undefined) {
+      children.forEach((child: NamedNode): void => {
+        representation.metadata.addQuad(memResource, hasMemRelation, child);
+      });
+    } else {
+      children.forEach((child: NamedNode): void => {
+        representation.metadata.addQuad(child, isMemOfRelation, memResource);
+      });
+    }
+  }
+
+  private removeBasicContainerInRepresentation(representation: Representation): void {
+    representation.metadata.remove(namedNode(RDF.type), namedNode(LDP.BasicContainer));
   }
 
   private async removeBasicContainerInMetadata(container: ResourceIdentifier,
