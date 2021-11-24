@@ -95,6 +95,8 @@ export const LDP = createUriAndTermNamespace('http://www.w3.org/ns/ldp#',
 
   'BasicContainer',
   'Container',
+  'DirectContainer',
+  'IndirectContainer',
   'Resource',
 );
 
