@@ -5,7 +5,7 @@
       "comment": "Stores data in a S3 bucket.",
       "@id": "urn:solid-server:default:S3DataAccessor",
       "@type": "S3DataAccessor",
-      "S3DataAccessor:_baseUrl": "http://localhost:3000/",
+      "S3DataAccessor:_baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
       "S3DataAccessor:_bucketName": "solid-test-s3"
     }
   ]
