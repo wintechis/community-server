@@ -1,3 +1,8 @@
+# LDP Direct Container Support for Community Solid Server
+[LPD Direct Containers](https://www.w3.org/TR/ldp/#ldpdc) are implemented as a PassthrougStore (basically a wrapper for Stores) in [DirectContainerStore.ts](https://github.com/wintechis/community-server/blob/8f975fffc18abf603085c172a8cbff608b401554/src/storage/DirectContainerStore.ts). The Direct Container functionality is activated by default. To use it, a container must have `rdf:type ldp:DirectContainer` in its metadata (e.g. by usng an HTTP PUT to the container).
+
+BE CAREFUL: This is a very hacky solution and probably should be done properly.
+
 # Community Solid Server
 
 <img src="https://raw.githubusercontent.com/solid/community-server/main/templates/images/solid.svg" alt="[Solid logo]" height="150" align="right"/>
