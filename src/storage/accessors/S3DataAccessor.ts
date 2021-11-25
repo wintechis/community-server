@@ -114,6 +114,7 @@ export class S3DataAccessor implements DataAccessor {
       Delimiter: '/',
     }));
 
+    // Traverse all the common prefixes (S3-specific stuff)
     for (const container of listing.CommonPrefixes ?? []) {
       const metadata = new RepresentationMetadata({
         path: `${this.baseUrl}${container.Prefix}`,
@@ -122,6 +123,7 @@ export class S3DataAccessor implements DataAccessor {
       yield metadata;
     }
 
+    // And traverse all the contents
     for (const resource of listing.Contents ?? []) {
       // Skip entry for self
       if (resource.Key === objectId) {
