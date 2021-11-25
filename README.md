@@ -1,3 +1,8 @@
+# AWS S3 Support for Community Solid Server
+A DataAccessor for AWS S3 is implemented in [S3DataAccessor.ts](https://github.com/wintechis/community-server/blob/a38fc2b5f933e5d3c7d6ed6a308045a88d0a7842/src/storage/accessors/S3DataAccessor.ts). S3 can be choosen as backend by running `npm run start:s3` or by explicitly using the config at `config/s3.json`. The S3 bucket to be accessed can be specified in `config/storage/backend/data-accessors/s3.json` under `S3DataAccessor:_bucketName`.
+
+The current implementation can probably be optimized a lot.
+
 # Community Solid Server
 
 <img src="https://raw.githubusercontent.com/solid/community-server/main/templates/images/solid.svg" alt="[Solid logo]" height="150" align="right"/>
