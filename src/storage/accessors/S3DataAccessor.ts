@@ -148,6 +148,7 @@ export class S3DataAccessor implements DataAccessor {
   public async writeDocument(identifier: ResourceIdentifier, data: Guarded<Readable>, metadata: RepresentationMetadata):
   Promise<void> {
     this.logger.debug(`Write Document: ${identifier.path} (${metadata.contentType})`);
+    const { contentType } = metadata;
     const objectId = identifier.path.replace(this.baseUrl, '');
     const metaId = `${objectId}.meta`;
     const wroteMetadata = await this.writeMetadata(metaId, metadata);
@@ -162,7 +163,7 @@ export class S3DataAccessor implements DataAccessor {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           Body: data as Readable,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          ContentType: metadata.contentType,
+          ContentType: contentType,
         },
       });
       await upload.done();
