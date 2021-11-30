@@ -16,6 +16,8 @@ export interface CliParams {
   baseUrl?: string;
   rootFilePath?: string;
   s3Bucket?: string;
+  s3AccessKeyId?: string;
+  s3SecretAccessKey?: string;
   sparqlEndpoint?: string;
   showStackTrace?: boolean;
   podConfigJson?: string;
@@ -80,7 +82,9 @@ export class AppRunner {
         mainModulePath: { type: 'string', alias: 'm', requiresArg: true },
         port: { type: 'number', alias: 'p', default: 3000, requiresArg: true },
         rootFilePath: { type: 'string', alias: 'f', default: './', requiresArg: true },
-        s3Bucket: { type: 'string', default: '' },
+        s3Bucket: { type: 'string', implies: [ 's3AccessKeyId', 's3SecretAccessKey' ]},
+        s3AccessKeyId: { type: 'string' },
+        s3SecretAccessKey: { type: 'string' },
         showStackTrace: { type: 'boolean', alias: 't', default: false },
         sparqlEndpoint: { type: 'string', alias: 's', requiresArg: true },
         podConfigJson: { type: 'string', default: './pod-config.json', requiresArg: true },
@@ -147,6 +151,8 @@ export class AppRunner {
       'urn:solid-server:default:variable:port': params.port,
       'urn:solid-server:default:variable:rootFilePath': resolveAssetPath(params.rootFilePath),
       'urn:solid-server:default:variable:s3Bucket': params.s3Bucket,
+      'urn:solid-server:default:variable:s3AccessKeyId': params.s3AccessKeyId,
+      'urn:solid-server:default:variable:s3SecretAccessKey': params.s3SecretAccessKey,
       'urn:solid-server:default:variable:sparqlEndpoint': params.sparqlEndpoint,
       'urn:solid-server:default:variable:showStackTrace': params.showStackTrace,
       'urn:solid-server:default:variable:podConfigJson': resolveAssetPath(params.podConfigJson),

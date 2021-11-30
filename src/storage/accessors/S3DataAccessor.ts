@@ -24,10 +24,15 @@ export class S3DataAccessor implements DataAccessor {
   private readonly s3client: S3Client;
   protected readonly logger = getLoggerFor(this);
 
-  public constructor(baseUrl: string, bucketName: string) {
+  public constructor(baseUrl: string, bucketName: string, accessKeyId: string, secretAccessKey: string) {
     this.baseUrl = ensureTrailingSlash(baseUrl);
     this.bucketName = bucketName;
-    this.s3client = new S3Client({});
+    this.s3client = new S3Client({
+      credentials: {
+        accessKeyId,
+        secretAccessKey,
+      },
+    });
   }
 
   /**

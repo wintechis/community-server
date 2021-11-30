@@ -6,7 +6,9 @@
       "@id": "urn:solid-server:default:S3DataAccessor",
       "@type": "S3DataAccessor",
       "S3DataAccessor:_baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
-      "S3DataAccessor:_bucketName": { "@id": "urn:solid-server:default:variable:s3Bucket" }
+      "S3DataAccessor:_bucketName": { "@id": "urn:solid-server:default:variable:s3Bucket" },
+      "S3DataAccessor:_accessKeyId": { "@id": "urn:solid-server:default:variable:s3AccessKeyId" },
+      "S3DataAccessor:_secretAccessKey": { "@id": "urn:solid-server:default:variable:s3SecretAccessKey" }
     }
   ]
 }
