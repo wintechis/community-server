@@ -32,6 +32,7 @@ export class S3DataAccessor implements DataAccessor {
         accessKeyId,
         secretAccessKey,
       },
+      region: 'eu-central-1',
     });
   }
 
