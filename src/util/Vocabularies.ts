@@ -63,6 +63,8 @@ export const ACL = createUriAndTermNamespace('http://www.w3.org/ns/auth/acl#',
   'AuthenticatedAgent',
   'Authorization',
   'default',
+  'headOfOrganization',
+  'memberOfOrganization',
   'mode',
 
   'Write',
@@ -120,6 +122,11 @@ export const MA = createUriAndTermNamespace('http://www.w3.org/ns/ma-ont#',
 
 export const OIDC = createUriAndTermNamespace('http://www.w3.org/ns/solid/oidc#',
   'redirect_uris',
+);
+
+export const ORG = createUriAndTermNamespace('http://www.w3.org/ns/org#',
+  'Organization',
+  'hasMember',
 );
 
 export const PIM = createUriAndTermNamespace('http://www.w3.org/ns/pim/space#',

@@ -12,7 +12,7 @@ export * from './authentication/UnsecureWebIdExtractor';
 export * from './authorization/access/AccessChecker';
 export * from './authorization/access/AgentAccessChecker';
 export * from './authorization/access/AgentClassAccessChecker';
-export * from './authorization/access/AgentGroupAccessChecker';
+export * from './authorization/access/OrganizationAccessChecker';
 
 // Authorization/Permissions
 export * from './authorization/permissions/AclPermission';
